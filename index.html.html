@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>CNGR 新加坡转口计划：全流程 1-14 批次监控看板</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root { --primary: #2563eb; --success: #059669; --warning: #d97706; --danger: #dc2626; --carbonx: #8b5cf6; --bg: #f8fafc; }
+        body { font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; background: var(--bg); margin: 0; padding: 20px; color: #1e293b; }
+        .container { max-width: 1600px; margin: 0 auto; }
+        header { background: #0f172a; color: white; padding: 20px 30px; border-radius: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+        
+        /* 状态卡片样式 */
+        .summary-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 20px; }
+        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border-top: 4px solid #cbd5e1; }
+        .stat-label { color: #64748b; font-size: 0.85rem; font-weight: bold; }
+        .stat-value { font-size: 1.5rem; font-weight: bold; margin-top: 8px; font-family: 'Consolas', monospace; }
+
+        .main-layout { display: grid; grid-template-columns: 420px 1fr; gap: 20px; }
+        
+        /* 左侧列表：回归 抵沪/在新/在途 标注 */
+        .lot-list { height: 850px; overflow-y: auto; padding-right: 10px; }
+        .lot-card { 
+            background: white; padding: 15px; border-radius: 8px; margin-bottom: 12px; 
+            cursor: pointer; border-left: 8px solid #e2e8f0; transition: all 0.2s;
+        }
+        .lot-card:hover { transform: translateX(5px); box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .lot-card.active { border-left-color: var(--primary); background: #eff6ff; }
+        .lot-card.at-sha { border-left-color: var(--success); } /* 抵沪 - 绿色 */
+        .lot-card.at-sin { border-left-color: var(--warning); } /* 在新 - 橙色 */
+        .lot-card.on-sea { border-left-color: #3b82f6; }        /* 在途 - 蓝色 */
+
+        /* 详情区 */
+        .detail-panel { background: white; padding: 25px; border-radius: 12px; position: sticky; top: 20px; }
+        .data-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin: 20px 0; }
+        .data-box { background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid #f1f5f9; }
+        .data-box label { display: block; color: #94a3b8; font-size: 0.7rem; margin-bottom: 4px; }
+        .data-box span { font-size: 0.95rem; font-weight: bold; color: #0f172a; }
+        
+        .timeline { display: flex; justify-content: space-between; margin: 40px 0; position: relative; }
+        .timeline::after { content: ''; position: absolute; top: 15px; left: 0; right: 0; height: 3px; background: #f1f5f9; z-index: 0; }
+        .node { position: relative; z-index: 1; width: 25%; text-align: center; }
+        .dot { width: 32px; height: 32px; background: white; border: 3px solid var(--primary); border-radius: 50%; margin: 0 auto 10px; line-height: 26px; font-weight: bold; font-size: 0.8rem; }
+        .node.passed .dot { background: var(--success); border-color: var(--success); color: white; }
+        .node.current .dot { background: var(--warning); border-color: var(--warning); color: white; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <div>
+            <h1 style="margin:0">CNGR 新加坡转口贸易监控：1-14全批次看板</h1>
+            <small>当前时间：2026年4月16日 | 实况：Lot 1-2 已抵沪 | Lot 3, 4, 9+ 在途 | Lot 5, 7 在新</small>
+        </div>
+        <div style="background:var(--primary); padding:10px 20px; border-radius:8px; font-weight:bold">
+            📢 状态同步：所有二程拟定时间已录入，请核对 Lot 3 到港进度
+        </div>
+    </header>
+
+    <div class="summary-grid">
+        <div class="card" style="border-top-color: var(--success)">
+            <div class="stat-label">1-5批：已付/锁定货款</div>
+            <div class="stat-value" style="color:var(--success)">$1,241,423.09</div>
+        </div>
+        <div class="card" style="border-top-color: var(--carbonx)">
+            <div class="stat-label">6-10批：货款池汇总</div>
+            <div class="stat-value" style="color:var(--carbonx)">$679,869.44</div>
+        </div>
+        <div class="card" style="border-top-color: var(--warning)">
+            <div class="stat-label">11-14批：待付金额预估</div>
+            <div class="stat-value" style="color:var(--warning)">$959,815.68</div>
+        </div>
+        <div class="card">
+            <canvas id="financeChart" height="70"></canvas>
+        </div>
+    </div>
+
+    <div class="main-layout">
+        <div class="lot-list" id="lotList"></div>
+
+        <div class="detail-panel">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <h2 id="d-title" style="margin:0">批次详情</h2>
+                <span id="d-status" style="padding:6px 15px; border-radius:20px; font-weight:bold; font-size:0.85rem;">-</span>
+            </div>
+
+            <div class="data-grid">
+                <div class="data-box"><label>货物名称</label><span id="d-name" style="color:var(--primary)">-</span></div>
+                <div class="data-box"><label>柜量/托数</label><span id="d-qty">-</span></div>
+                <div class="data-box"><label>提单号</label><span id="d-bl" style="font-size:0.75rem">-</span></div>
+                <div class="data-box"><label>发票号</label><span id="d-inv" style="font-size:0.75rem">-</span></div>
+                
+                <div class="data-box"><label>净重 (KG)</label><span id="d-nw">-</span></div>
+                <div class="data-box"><label>本批货值 (USD)</label><span id="d-val">-</span></div>
+                <div class="data-box"><label>单价 (USD/KG)</label><span id="d-up">-</span></div>
+                <div class="data-box"><label>付款池</label><span id="d-pool">-</span></div>
+            </div>
+
+            <h3 style="border-left:4px solid var(--primary); padding-left:10px; font-size:1.1rem;">流转时间轴</h3>
+            <div class="timeline">
+                <div class="node" id="n1"><div class="dot">1</div>欧洲起运<br><small id="t-etd1">-</small></div>
+                <div class="node" id="n2"><div class="dot">2</div>抵达 SIN<br><small id="t-eta1">-</small></div>
+                <div class="node" id="n3"><div class="dot">3</div>发往 SHA<br><small id="t-etd2">-</small></div>
+                <div class="node" id="n4"><div class="dot">4</div>抵沪 SHA<br><small id="t-eta2">-</small></div>
+            </div>
+
+            <div id="action-box" style="padding:15px; border-radius:8px; background:#fffbeb; border:1px solid #fef3c7; line-height:1.6;">
+                <strong>🚩 实时报告：</strong> <span id="d-adv">-</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 核心逻辑：根据 2026-04-16 实际时间点校准状态
+    const lots = [
+        {id:"1", name:"电池模组", qty:"10柜 / 200托", inv:"CRCL-S20260126-lot1", nw:121200, up:3.30, val:399960.00, bl:"264122582", status:"SHA", etd1:"01-26", eta1:"03-10", etd2:"03-30", eta2:"04-05", pool:"1-5池", adv:"已于 4/5 抵沪，完成清关入库。"},
+        {id:"2", name:"电池模组", qty:"6柜 / 120托", inv:"CRCL-S20260202-lot2", nw:72720, up:3.30, val:239976.00, bl:"265074878", status:"SHA", etd1:"02-02", eta1:"03-17", etd2:"03-30", eta2:"04-05", pool:"1-5池", adv:"已于 4/5 抵沪，完成清关入库。"},
+        {id:"3", name:"电池电芯", qty:"4柜 / 158托", inv:"CRCL-S20260203-lot3", nw:43280, up:3.73, val:161571.57, bl:"MEDUEC659772", status:"SEA", etd1:"02-03", eta1:"03-17", etd2:"04-02", eta2:"04-26", pool:"1-5池", adv:"二程航行中，预计 4/26 抵沪。"},
+        {id:"4", name:"电池电芯", qty:"6柜 / 240托", inv:"CRCL-S20260210-lot4", nw:65740, up:3.65, val:239953.92, bl:"265694038", status:"SEA", etd1:"02-09", eta1:"03-25", etd2:"04-13", eta2:"04-26", pool:"1-5池", adv:"二程已于 4/13 起运，在途。"},
+        {id:"5", name:"电池电芯", qty:"5柜 / 200托", inv:"CRCL-S20260224-lot5", nw:54780, up:3.65, val:199961.60, bl:"265991654", status:"SIN", etd1:"02-15", eta1:"04-15", etd2:"04-25", eta2:"05-03", pool:"1-5池", adv:"已抵新加坡，拟定 4/25 发往上海。"},
+        {id:"6", name:"电池电芯", qty:"3柜 / 100托", inv:"CRCL-S20260304-lot6", nw:27390, up:3.65, val:99980.80, bl:"MEDUEC662941", status:"SEA", etd1:"03-03", eta1:"05-03", etd2:"待定", eta2:"待定", pool:"6-10池", adv:"首程严重延误中。"},
+        {id:"7", name:"电池电芯", qty:"4柜 / 140托", inv:"CRCL-S20260225-lot7", nw:38350, up:3.65, val:139973.12, bl:"266155136", status:"SIN", etd1:"02-24", eta1:"04-07", etd2:"04-20", eta2:"05-02", pool:"6-10池", adv:"新加坡在库，拟定 4/20 发往上海。"},
+        {id:"8", name:"电池电芯", qty:"3柜 / 100托", inv:"CRCL-S20260306-lot8", nw:27390, up:3.65, val:99980.80, bl:"MEDUEC663659", status:"SEA", etd1:"03-05", eta1:"05-18", etd2:"待定", eta2:"待定", pool:"6-10池", adv:"首程在途（经两转）。"},
+        {id:"9", name:"电池电芯", qty:"4柜 / 140托", inv:"CRCL-S20260303-lot9", nw:38350, up:3.65, val:139973.12, bl:"266370578", status:"SEA", etd1:"03-01", eta1:"04-18", etd2:"04-25", eta2:"05-03", pool:"6-10池", adv:"即将抵达新加坡。"},
+        {id:"10.1", name:"电池电芯", qty:"4柜 / 160托", inv:"lot10-01", nw:43830, up:3.65, val:159969.28, bl:"266510640", status:"SEA", etd1:"03-08", eta1:"04-21", etd2:"待定", eta2:"待定", pool:"6-10池", adv:"首程正常在途。"},
+        {id:"10.2", name:"电池电芯", qty:"1柜 / 40托", inv:"lot10-02", nw:10960, up:3.65, val:39992.32, bl:"266510100", status:"SEA", etd1:"03-08", eta1:"04-21", etd2:"待定", eta2:"待定", pool:"6-10池", adv:"首程正常在途。"},
+        {id:"11", name:"电池电芯", qty:"7柜 / 280托", inv:"CRCL-S20260316-lot11", nw:76700, up:3.65, val:279946.24, bl:"266738992", status:"SEA", etd1:"03-16", eta1:"04-28", etd2:"待定", eta2:"待定", pool:"11-14池", adv:"首程正常在途。"},
+        {id:"12", name:"电池电芯", qty:"7柜 / 280托", inv:"CRCL-S20260322-lot12", nw:76700, up:3.65, val:279946.24, bl:"267045813", status:"SEA", etd1:"03-22", eta1:"05-05", etd2:"待定", eta2:"待定", pool:"11-14池", adv:"首程在途。"},
+        {id:"13", name:"电池电芯", qty:"7柜 / 280托", inv:"CRCL-S20260330-lot13", nw:76700, up:3.65, val:279946.24, bl:"267324659", status:"SEA", etd1:"03-29", eta1:"05-12", etd2:"待定", eta2:"待定", pool:"11-14池", adv:"首程在途。"},
+        {id:"14", name:"电池电芯", qty:"3柜 / 120托", inv:"CRCL-S20260410-lot14", nw:32870, up:3.65, val:119976.96, bl:"267593814", status:"SEA", etd1:"待定", eta1:"待定", etd2:"待定", eta2:"待定", pool:"11-14池", adv:"Koper 起运计划中。"}
+    ];
+
+    function init() {
+        const list = document.getElementById('lotList');
+        lots.forEach(lot => {
+            const div = document.createElement('div');
+            let sClass = lot.status === 'SHA' ? "at-sha" : (lot.status === 'SIN' ? "at-sin" : "on-sea");
+            let sLabel = lot.status === 'SHA' ? "✅抵沪" : (lot.status === 'SIN' ? "🍊在新" : "🚢在途");
+            
+            div.className = `lot-card ${sClass}`;
+            div.innerHTML = `
+                <div style="display:flex; justify-content:space-between">
+                    <strong>Lot ${lot.id} - ${lot.name.substring(0,2)}</strong>
+                    <span style="font-size:0.7rem; font-weight:bold">${sLabel}</span>
+                </div>
+                <div style="font-size:0.75rem; margin-top:8px; color:#64748b; display:flex; justify-content:space-between">
+                    <span>${lot.qty}</span>
+                    <span>$${lot.val.toLocaleString()}</span>
+                </div>
+            `;
+            div.onclick = () => showDetail(lot, div);
+            list.appendChild(div);
+        });
+        showDetail(lots[0], list.firstChild);
+        renderChart();
+    }
+
+    function showDetail(lot, el) {
+        document.querySelectorAll('.lot-card').forEach(c => c.classList.remove('active'));
+        el.classList.add('active');
+        document.getElementById('d-title').innerText = `Lot ${lot.id} 详细数控档案`;
+        document.getElementById('d-name').innerText = lot.name;
+        document.getElementById('d-qty').innerText = lot.qty;
+        document.getElementById('d-inv').innerText = lot.inv;
+        document.getElementById('d-nw').innerText = lot.nw.toLocaleString() + " KG";
+        document.getElementById('d-bl').innerText = lot.bl;
+        document.getElementById('d-up').innerText = lot.up.toFixed(2);
+        document.getElementById('d-val').innerText = lot.val.toLocaleString();
+        document.getElementById('d-pool').innerText = lot.pool;
+        document.getElementById('d-adv').innerText = lot.adv;
+
+        const st = document.getElementById('d-status');
+        st.innerText = lot.status === 'SHA' ? '状态：已抵上海' : (lot.status === 'SIN' ? '状态：新加坡仓库' : '状态：在途运输');
+        st.style.background = lot.status === 'SHA' ? '#dcfce7' : (lot.status === 'SIN' ? '#ffedd5' : '#dbeafe');
+        st.style.color = lot.status === 'SHA' ? 'var(--success)' : (lot.status === 'SIN' ? 'var(--warning)' : '#1d4ed8');
+
+        document.getElementById('t-etd1').innerText = lot.etd1;
+        document.getElementById('t-eta1').innerText = lot.eta1;
+        document.getElementById('t-etd2').innerText = lot.etd2;
+        document.getElementById('t-eta2').innerText = lot.eta2;
+
+        const nodes = ['n1','n2','n3','n4'];
+        nodes.forEach(n => document.getElementById(n).className = 'node');
+        if(lot.status === 'SHA') { nodes.forEach(n => document.getElementById(n).classList.add('passed')); }
+        else if(lot.status === 'SIN') { ['n1'].forEach(n => document.getElementById(n).classList.add('passed')); document.getElementById('n2').classList.add('current'); }
+        else if(lot.status === 'SEA' && lot.etd2 !== '待定') { ['n1','n2'].forEach(n => document.getElementById(n).classList.add('passed')); document.getElementById('n3').classList.add('current'); }
+        else { document.getElementById('n1').classList.add('current'); }
+    }
+
+    function renderChart() {
+        new Chart(document.getElementById('financeChart'), {
+            type: 'bar',
+            data: {
+                labels: ['1-5池', '6-10池', '11-14池'],
+                datasets: [{
+                    data: [1241423, 679869, 959815],
+                    backgroundColor: ['#059669', '#8b5cf6', '#f59e0b']
+                }]
+            },
+            options: { indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { display: false } } }
+        });
+    }
+    window.onload = init;
+</script>
+</body>
+</html>
