@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>CNGR 新加坡转口贸易监控：1-14全批次看板</title>
+    <title>CNGR 新加坡转口贸易监控：1-15全批次看板</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root { --primary: #2563eb; --success: #059669; --warning: #d97706; --danger: #dc2626; --carbonx: #8b5cf6; --bg: #f8fafc; }
@@ -61,8 +61,8 @@
 <div class="container">
     <header>
         <div>
-            <h1 style="margin:0">CNGR 新加坡转口贸易监控：1-14全批次看板</h1>
-            <p style="margin:5px 0 0; opacity:0.8">数据基准日: 2026-04-20 | 物流进度与资金结算实时监控</p>
+            <h1 style="margin:0">CNGR 新加坡转口贸易监控：1-15全批次看板</h1>
+            <p style="margin:5px 0 0; opacity:0.8">数据基准日: 2026-04-29 | 1-15 批次物流与资金全维追踪</p>
         </div>
         <div style="text-align: right">
             <span class="tag tag-green">项目管理: Leo Lu (30Y Exp)</span>
@@ -83,21 +83,23 @@
         <div class="card warning">
             <label>重点预警</label>
             <h2>Lot 3 延误 (4/27)</h2>
-            <p>Lot 4 (4/26) | Lot 7 计划 4/25 离港</p>
+            <p>Lot 4 到港 4/26 | Lot 7 计划 4/25 离港</p>
         </div>
         <div class="card danger">
-            <label>11-14 批次应付金额</label>
-            <h2>$959,815.68</h2>
-            <p>Lot 11-13 (每批$280k) | Lot 14 ($120k)</p>
+            <label>11-15 批次应付金额</label>
+            <h2>$1,239,761.92</h2>
+            <p>Lot 11-13 & 15 (每批$280k) | Lot 14 ($120k)</p>
         </div>
     </div>
 
     <div class="main-content">
+        <!-- 左侧：批次列表 -->
         <div class="lot-list">
             <div class="list-header">批次监控列表 (LOT LIST)</div>
             <div id="lotItems"></div>
         </div>
 
+        <!-- 中间：详情面板 -->
         <div class="detail-panel">
             <h2 id="lotTitle" style="margin-top:0">请选择批次查看详情</h2>
             <div class="timeline">
@@ -113,6 +115,7 @@
             </div>
         </div>
 
+        <!-- 右侧：资金条码 -->
         <div class="chart-side">
             <h3 style="margin-top:0; font-size: 0.95rem; color: #475569; text-align: center;">三阶段资金池分布 (USD)</h3>
             <div style="height: 400px;">
@@ -121,7 +124,7 @@
             <div style="margin-top: 25px; font-size: 0.8rem; color: #64748b;">
                 <div style="margin-bottom: 10px;"><span style="color:var(--success)">■</span> 1-5 批次：货款已结清</div>
                 <div style="margin-bottom: 10px;"><span style="color:var(--carbonx)">■</span> 6-10 批次：货款已结清</div>
-                <div><span style="color:var(--danger)">■</span> 11-14 批次：账期内待付</div>
+                <div><span style="color:var(--danger)">■</span> 11-15 批次：账期内待付</div>
             </div>
         </div>
     </div>
@@ -129,21 +132,21 @@
 
 <script>
     const lotsData = [
-        { id: "1", type: "Module", bl: "264122582", amt: "$399,960", etd1: "1/26", eta1: "3/11", etd2: "3/30", eta2: "4/6", status: "抵沪", pay: "已付", impCnt: 10, expCnt: 10, pallets: 200, boxes: 4000, pcs: 96000, remark: "1-5批次已结。模组方案：1箱=1模组=24电芯。" },
+        { id: "1", type: "Module", bl: "264122582", amt: "$399,960", etd1: "1/26", eta1: "3/11", etd2: "3/30", eta2: "4/6", status: "抵沪", pay: "已付", impCnt: 10, expCnt: 10, pallets: 200, boxes: 4000, pcs: 96000, remark: "1-5批次已结。模组方案。每个模组含24电芯。" },
         { id: "2", type: "Module", bl: "265074878", amt: "$239,976", etd1: "2/2", eta1: "3/17", etd2: "3/30", eta2: "4/6", status: "抵沪", pay: "已付", impCnt: 6, expCnt: 6, pallets: 120, boxes: 2400, pcs: 57600, remark: "1-5批次已结。单层平铺。" },
         { id: "3", type: "Cell", bl: "MEDUEC659772", amt: "$161,571", etd1: "2/3", eta1: "3/17", etd2: "4/12", eta2: "4/27", status: "在途", pay: "已付", impCnt: 8, expCnt: 4, pallets: 158, boxes: 2528, pcs: 40448, remark: "1-5批次已结。堆叠方案。口头通知延误至4/27。" },
         { id: "4", type: "Cell", bl: "265694038", amt: "$239,953", etd1: "2/9", eta1: "3/25", etd2: "4/16", eta2: "4/26", status: "在途", pay: "已付", impCnt: 12, expCnt: 6, pallets: 240, boxes: 3840, pcs: 61440, remark: "1-5批次已结。新加坡延误22天，ETA 修正为 4/26。" },
         { id: "5", type: "Cell", bl: "265991654", amt: "$199,961", etd1: "2/15", eta1: "4/16", etd2: "4/26", eta2: "5/11", status: "在途", pay: "已付", impCnt: 10, expCnt: 5, pallets: 200, boxes: 3200, pcs: 51200, remark: "1-5批次已结。堆叠出口计划更新：4/26离港。" },
-        { id: "6", type: "Cell", bl: "MEDUEC662941", amt: "$99,980", etd1: "3/3", eta1: "5/2", etd2: "待定", eta2: "待定", status: "在途", pay: "已付", impCnt: 8, expCnt: 4, pallets: 160, boxes: 2560, pcs: 40960, remark: "6-10批次已结。一程航程严重延误。" },
+        { id: "6", type: "Cell", bl: "MEDUEC662941", amt: "$99,980", etd1: "3/3", eta1: "5/2", etd2: "待定", eta2: "待定", status: "在途", pay: "已付", impCnt: 8, expCnt: 4, pallets: 160, boxes: 2560, pcs: 40960, remark: "6-10批次已结。航程严重延误。" },
         { id: "7", type: "Cell", bl: "266155136", amt: "$139,973", etd1: "2/24", eta1: "4/7", etd2: "4/25", eta2: "5/6", status: "在新", pay: "已付", impCnt: 7, expCnt: 4, pallets: 140, boxes: 2240, pcs: 35840, remark: "6-10批次已结。更新：预计4/25离港，5/6抵达。" },
         { id: "8", type: "Cell", bl: "MEDUEC663659", amt: "$99,980", etd1: "3/5", eta1: "5/18", etd2: "待定", eta2: "待定", status: "在途", pay: "已付", impCnt: 10, expCnt: 5, pallets: 200, boxes: 3200, pcs: 51200, remark: "6-10批次已结。" },
-        { id: "9", type: "Cell", bl: "266370578", amt: "$139,973", etd1: "3/1", eta1: "4/18", etd2: "4/26", eta2: "5/11", status: "在途", pay: "已付", impCnt: 7, expCnt: 4, pallets: 140, boxes: 2240, pcs: 35840, remark: "6-10批次已结。计划 4/26 离新。" },
-        { id: "10.1", type: "Cell", bl: "266510640", amt: "$159,969", etd1: "3/8", eta1: "4/21", etd2: "4/28", eta2: "5/8", status: "在途", pay: "已付", impCnt: 5, expCnt: 3, pallets: 100, boxes: 1600, pcs: 25600, remark: "6-10批次已结。更新：4/28离港，5/8抵达。" },
-        { id: "10.2", type: "Cell", bl: "266510640-B", amt: "$159,969", etd1: "3/8", eta1: "4/21", etd2: "4/28", eta2: "5/8", status: "在途", pay: "已付", impCnt: 5, expCnt: 3, pallets: 100, boxes: 1600, pcs: 25600, remark: "6-10批次已结。更新：4/28离港，5/8抵达。" },
-        { id: "11", type: "Cell", bl: "266738992", amt: "$279,946", etd1: "3/16", eta1: "4/30", etd2: "待定", eta2: "待定", status: "在途", pay: "待付", impCnt: 14, expCnt: 7, pallets: 280, boxes: 4480, pcs: 71680, remark: "11-14待付。预计4月底抵新。" },
-        { id: "12", type: "Cell", bl: "267045813", amt: "$279,946", etd1: "3/20", eta1: "5/4", etd2: "待定", eta2: "待定", status: "在途", pay: "待付", impCnt: 14, expCnt: 7, pallets: 280, boxes: 4480, pcs: 71680, remark: "11-14待付。" },
-        { id: "13", type: "Cell", bl: "267324659", amt: "$279,946", etd1: "3/25", eta1: "5/9", etd2: "待定", eta2: "待定", status: "在途", pay: "待付", impCnt: 14, expCnt: 7, pallets: 280, boxes: 4480, pcs: 71680, remark: "11-14待付。" },
-        { id: "14", type: "Cell", bl: "267593814", amt: "$119,976", etd1: "4/9", eta1: "5/26", etd2: "待定", eta2: "待定", status: "在途", pay: "待付", impCnt: 6, expCnt: 3, pallets: 120, boxes: 1920, pcs: 30720, remark: "11-14待付。Koper 离港。" }
+        { id: "9", type: "Cell", bl: "266370578", amt: "$139,973", etd1: "3/1", eta1: "4/18", etd2: "4/26", eta2: "5/11", status: "在途", pay: "已付", impCnt: 7, expCnt: 4, pallets: 140, boxes: 2240, pcs: 35840, remark: "6-10批次已结。" },
+        { id: "10", type: "Cell", bl: "266510640", amt: "$159,969", etd1: "3/8", eta1: "4/21", etd2: "4/28", eta2: "5/8", status: "在途", pay: "已付", impCnt: 10, expCnt: 5, pallets: 200, boxes: 3200, pcs: 51200, remark: "6-10批次已结。4/28 离新。" },
+        { id: "11", type: "Cell", bl: "266738992", amt: "$279,946", etd1: "3/16", eta1: "4/30", etd2: "待定", eta2: "待定", status: "在途", pay: "待付", impCnt: 14, expCnt: 7, pallets: 280, boxes: 4480, pcs: 71680, remark: "11-15 待付。每批约$280k。" },
+        { id: "12", type: "Cell", bl: "267045813", amt: "$279,946", etd1: "3/20", eta1: "5/4", etd2: "待定", eta2: "待定", status: "在途", pay: "待付", impCnt: 14, expCnt: 7, pallets: 280, boxes: 4480, pcs: 71680, remark: "11-15 待付。" },
+        { id: "13", type: "Cell", bl: "267324659", amt: "$279,946", etd1: "3/25", eta1: "5/9", etd2: "待定", eta2: "待定", status: "在途", pay: "待付", impCnt: 14, expCnt: 7, pallets: 280, boxes: 4480, pcs: 71680, remark: "11-15 待付。" },
+        { id: "14", type: "Cell", bl: "267593814", amt: "$119,976", etd1: "4/9", eta1: "5/26", etd2: "待定", eta2: "待定", status: "在途", pay: "待付", impCnt: 6, expCnt: 3, pallets: 120, boxes: 1920, pcs: 30720, remark: "11-15 待付。" },
+        { id: "15", type: "Cell", bl: "267699290", amt: "$279,946", etd1: "4/24", eta1: "5/28", etd2: "待定", eta2: "待定", status: "在途", pay: "待付", impCnt: 14, expCnt: 7, pallets: 280, boxes: 4480, pcs: 71680, remark: "最新 Lot 15 刚离欧洲。Vessel: AL MURABBA 617E。" }
     ];
 
     function init() {
@@ -160,7 +163,7 @@
             div.onclick = () => selectLot(lot);
             listContainer.appendChild(div);
         });
-        selectLot(lotsData[6]); // 默认打开 Lot 7
+        selectLot(lotsData[lotsData.length - 1]); 
         renderChart();
     }
 
@@ -181,7 +184,7 @@
         infoGrid.innerHTML = `
             <div class="info-item"><label>提单号</label><span>${lot.bl}</span></div>
             <div class="info-item"><label>资金支付状态</label><span class="tag tag-green">${lot.pay}</span></div>
-            <div class="info-item"><label>物流节点</label><span style="color:var(--primary)">${lot.status}</span></div>
+            <div class="info-item"><label>物流状态节点</label><span style="color:var(--primary)">${lot.status}</span></div>
             
             <div class="info-item highlight-data"><label>进口箱数 (RF)</label><span>${lot.impCnt} 个</span></div>
             <div class="info-item highlight-data"><label>出口堆叠 HQ</label><span>${lot.expCnt} 个</span></div>
@@ -191,9 +194,9 @@
             <div class="info-item"><label>电池总件数 (PCS)</label><span>${lot.pcs.toLocaleString()}</span></div>
             <div class="info-item"><label>到港预判 (ETA)</label><span style="color:var(--danger)">${lot.eta2}</span></div>
             
-            <div class="info-item"><label>规则</label><span>${lot.type==='Module'?'1箱=24电芯':'1箱=16电芯'}</span></div>
-            <div class="info-item"><label>货值</label><span>${lot.amt}</span></div>
-            <div class="info-item"><label>操作</label><span>${lot.expCnt < lot.impCnt ? '双层堆叠' : '单层平铺'}</span></div>
+            <div class="info-item"><label>换算规则</label><span>${lot.type==='Module'?'1箱=24电芯':'1箱=16电芯'}</span></div>
+            <div class="info-item"><label>货值金额</label><span>${lot.amt}</span></div>
+            <div class="info-item"><label>操作模式</label><span>${lot.expCnt < lot.impCnt ? '双层堆叠' : '单层平铺'}</span></div>
         `;
 
         updateTimeline(lot.status, lot.etd2);
@@ -221,10 +224,10 @@
         new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: ['1-5 批次', '6-10 批次', '11-14 批次'],
+                labels: ['1-5 批次', '6-10 批次', '11-15 批次'],
                 datasets: [{
                     label: '金额 (USD)',
-                    data: [1241423.09, 679969.44, 959815.68],
+                    data: [1241423.09, 679969.44, 1239761.92],
                     backgroundColor: ['rgba(5, 150, 105, 0.75)', 'rgba(139, 92, 246, 0.75)', 'rgba(220, 38, 38, 0.75)'],
                     borderColor: ['#059669', '#8b5cf6', '#dc2626'],
                     borderWidth: 1.5, borderRadius: 5
