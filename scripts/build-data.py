@@ -1,4 +1,4 @@
-import argparse
+﻿import argparse
 import json
 import re
 from datetime import date, datetime
@@ -11,6 +11,7 @@ import openpyxl
 HEADER_ALIASES = {
     "import_lot": "进口批次 / 货品",
     "import_amount": "进口发票金额 (USD)",
+    "payment_status": "货款已付",
     "export_lot": "出口批次(Export Lot)",
     "import_containers": "进口柜数",
     "export_containers": "出口柜数",
@@ -123,6 +124,22 @@ def infer_payment_status(lot_number):
     return "已付" if lot_number < 11 else "待付"
 
 
+def normalize_payment_status(value, lot_number):
+    text = clean_text(value)
+    if not text:
+        return infer_payment_status(lot_number)
+
+    lowered = text.lower()
+    if lowered in {"yes", "y", "paid", "true", "已付", "已付款"}:
+        return "已付"
+    if lowered in {"no", "n", "unpaid", "false", "待付", "未付", "未付款"}:
+        return "待付"
+    if "estimate" in lowered or "预计" in text or "暂定" in text:
+        due = text.replace("estimate", "").strip()
+        return f"预计付款 {due}" if due else text
+    return text
+
+
 def infer_status(remark, europe_etd, singapore_eta, singapore_etd, shanghai_eta, as_of_date):
     combined = f"{remark} {singapore_eta} {singapore_etd} {shanghai_eta}"
     if "已抵上海" in combined or "已抵沪" in combined:
@@ -226,7 +243,7 @@ def build_lots(workbook_path, as_of_date):
                 "shanghaiEta": shanghai_eta,
                 "status": status,
                 "stage": infer_stage(status, singapore_etd, shanghai_eta),
-                "pay": infer_payment_status(lot["idNumber"]),
+                "pay": normalize_payment_status(cell(row, column_map, "payment_status"), lot["idNumber"]),
                 "remark": remark,
             }
         )
@@ -306,3 +323,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
