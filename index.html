@@ -2,35 +2,30 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>CNGR 新加坡转口贸易监控：1-15全批次看板</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CNGR 新加坡转口贸易监控</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root { --primary: #2563eb; --success: #059669; --warning: #d97706; --danger: #dc2626; --carbonx: #8b5cf6; --bg: #f8fafc; }
         body { font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; background: var(--bg); margin: 0; padding: 20px; color: #1e293b; }
         .container { max-width: 1600px; margin: 0 auto; }
-        header { background: #0f172a; color: white; padding: 20px 30px; border-radius: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
-        
-        /* 统计卡片样式 */
+        header { background: #0f172a; color: white; padding: 20px 30px; border-radius: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; gap: 20px; }
+        header p { margin: 5px 0 0; opacity: 0.8; }
         .summary-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 20px; }
         .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border-left: 5px solid var(--primary); }
         .card h2 { margin: 10px 0 5px; font-size: 1.6rem; }
+        .card p { margin: 0; color: #64748b; line-height: 1.45; }
         .card.success { border-left-color: var(--success); }
         .card.warning { border-left-color: var(--warning); }
         .card.danger { border-left-color: var(--danger); }
         .card.carbon { border-left-color: var(--carbonx); }
-        
-        /* 三栏布局 */
         .main-content { display: grid; grid-template-columns: 320px 1fr 350px; gap: 20px; }
-        
-        /* 左侧列表 */
         .lot-list { background: white; border-radius: 12px; overflow: hidden; height: 850px; overflow-y: auto; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
         .list-header { padding: 15px 20px; background: #f1f5f9; font-weight: bold; font-size: 0.9rem; border-bottom: 1px solid #e2e8f0; }
         .lot-item { padding: 15px 20px; border-bottom: 1px solid #f1f5f9; cursor: pointer; transition: all 0.2s; display: flex; justify-content: space-between; align-items: center; }
         .lot-item:hover { background: #f8fafc; }
         .lot-item.active { background: #eff6ff; border-right: 4px solid var(--primary); }
         .status-dot { width: 10px; height: 10px; border-radius: 50%; margin-right: 10px; display: inline-block; }
-        
-        /* 中间详情 */
         .detail-panel { background: white; border-radius: 12px; padding: 30px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
         .timeline { display: flex; justify-content: space-between; position: relative; margin: 40px 0; padding: 0 40px; }
         .timeline::after { content: ''; position: absolute; top: 15px; left: 60px; right: 60px; height: 2px; background: #e2e8f0; z-index: 1; }
@@ -40,66 +35,52 @@
         .node.current .dot { background: var(--warning); box-shadow: 0 0 0 2px var(--warning); animation: pulse 2s infinite; }
         .node span { font-size: 0.85rem; color: #64748b; font-weight: 500; }
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.15); box-shadow: 0 0 15px rgba(217, 119, 6, 0.4); } 100% { transform: scale(1); } }
-        
-        /* 详细网格 */
         .info-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; border-top: 1px solid #f1f5f9; padding-top: 20px; }
         .info-item { padding: 10px; border-radius: 8px; background: #f8fafc; border: 1px solid #f1f5f9; }
         .info-item label { color: #64748b; font-size: 0.75rem; display: block; margin-bottom: 3px; }
         .info-item span { font-weight: 600; color: #1e293b; font-size: 0.9rem; }
         .highlight-data { background: #eff6ff; border-color: #dbeafe; }
-        
         .remark-box { margin-top: 20px; padding: 15px; background: #fff7ed; border: 1px solid #ffedd5; border-radius: 8px; color: #9a3412; font-size: 0.9rem; line-height: 1.5; }
-        .tag { padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
+        .tag { padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; display: inline-block; }
         .tag-red { background: #fee2e2; color: #991b1b; }
         .tag-green { background: #dcfce7; color: #166534; }
-        
-        /* 右侧图表 */
         .chart-side { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .loading { padding: 24px; color: #64748b; text-align: center; }
+        .error { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; border-radius: 8px; padding: 16px; margin-bottom: 20px; }
+
+        @media (max-width: 1180px) {
+            .summary-grid, .main-content { grid-template-columns: 1fr; }
+            .lot-list { height: auto; max-height: 420px; }
+        }
     </style>
 </head>
 <body>
 <div class="container">
     <header>
         <div>
-            <h1 style="margin:0">CNGR 新加坡转口贸易监控：1-15全批次看板</h1>
-            <p style="margin:5px 0 0; opacity:0.8">数据基准日: 2026-04-29 | 1-15 批次物流与资金全维追踪</p>
+            <h1 id="pageTitle" style="margin:0">CNGR 新加坡转口贸易监控</h1>
+            <p id="pageSubtitle">正在读取 Excel 生成的数据...</p>
         </div>
         <div style="text-align: right">
-            <span class="tag tag-green">项目管理: Leo Lu (30Y Exp)</span>
+            <span class="tag tag-green">项目管理: Leo Lu</span>
         </div>
     </header>
 
-    <div class="summary-grid">
-        <div class="card success">
-            <label>1-5 批次状态 (已付)</label>
-            <h2>$1,241,423.09</h2>
-            <p>Lot 1, 2 抵沪 | Lot 3, 4, 5 在途</p>
-        </div>
-        <div class="card carbon">
-            <label>6-10 批次状态 (已付)</label>
-            <h2>$679,969.44</h2>
-            <p>Lot 7 在新 | Lot 6, 8, 9, 10 在途</p>
-        </div>
-        <div class="card warning">
-            <label>重点预警</label>
-            <h2>Lot 3 延误 (4/27)</h2>
-            <p>Lot 4 到港 4/26 | Lot 7 计划 4/25 离港</p>
-        </div>
-        <div class="card danger">
-            <label>11-15 批次应付金额</label>
-            <h2>$1,239,761.92</h2>
-            <p>Lot 11-13 & 15 (每批$280k) | Lot 14 ($120k)</p>
-        </div>
+    <div id="errorBox"></div>
+
+    <div class="summary-grid" id="summaryGrid">
+        <div class="card"><div class="loading">加载中...</div></div>
+        <div class="card"><div class="loading">加载中...</div></div>
+        <div class="card"><div class="loading">加载中...</div></div>
+        <div class="card"><div class="loading">加载中...</div></div>
     </div>
 
     <div class="main-content">
-        <!-- 左侧：批次列表 -->
         <div class="lot-list">
             <div class="list-header">批次监控列表 (LOT LIST)</div>
-            <div id="lotItems"></div>
+            <div id="lotItems"><div class="loading">加载中...</div></div>
         </div>
 
-        <!-- 中间：详情面板 -->
         <div class="detail-panel">
             <h2 id="lotTitle" style="margin-top:0">请选择批次查看详情</h2>
             <div class="timeline">
@@ -108,54 +89,113 @@
                 <div class="node" id="n3"><div class="dot"></div><span>离新 (SIN)</span><div id="t-etd2" style="font-size: 0.7rem; margin-top: 5px;">-</div></div>
                 <div class="node" id="n4"><div class="dot"></div><span>到港 (上海)</span><div id="t-eta2" style="font-size: 0.7rem; margin-top: 5px;">-</div></div>
             </div>
-            
+
             <div class="info-grid" id="infoGrid"></div>
             <div class="remark-box" id="remarkBox">
-                <strong>实时备注：</strong> <span id="remarkContent">请从左侧选择批次。</span>
+                <strong>实时备注：</strong> <span id="remarkContent">数据加载完成后自动显示最新批次。</span>
             </div>
         </div>
 
-        <!-- 右侧：资金条码 -->
         <div class="chart-side">
-            <h3 style="margin-top:0; font-size: 0.95rem; color: #475569; text-align: center;">三阶段资金池分布 (USD)</h3>
+            <h3 style="margin-top:0; font-size: 0.95rem; color: #475569; text-align: center;">阶段资金池分布 (USD)</h3>
             <div style="height: 400px;">
                 <canvas id="financeChart"></canvas>
             </div>
-            <div style="margin-top: 25px; font-size: 0.8rem; color: #64748b;">
-                <div style="margin-bottom: 10px;"><span style="color:var(--success)">■</span> 1-5 批次：货款已结清</div>
-                <div style="margin-bottom: 10px;"><span style="color:var(--carbonx)">■</span> 6-10 批次：货款已结清</div>
-                <div><span style="color:var(--danger)">■</span> 11-15 批次：账期内待付</div>
-            </div>
+            <div id="chartLegend" style="margin-top: 25px; font-size: 0.8rem; color: #64748b;"></div>
         </div>
     </div>
 </div>
 
 <script>
-    const lotsData = [
-        { id: "1", type: "Module", bl: "264122582", amt: "$399,960", etd1: "1/26", eta1: "3/11", etd2: "3/30", eta2: "4/6", status: "抵沪", pay: "已付", impCnt: 10, expCnt: 10, pallets: 200, boxes: 4000, pcs: 96000, remark: "1-5批次已结。模组方案。每个模组含24电芯。" },
-        { id: "2", type: "Module", bl: "265074878", amt: "$239,976", etd1: "2/2", eta1: "3/17", etd2: "3/30", eta2: "4/6", status: "抵沪", pay: "已付", impCnt: 6, expCnt: 6, pallets: 120, boxes: 2400, pcs: 57600, remark: "1-5批次已结。单层平铺。" },
-        { id: "3", type: "Cell", bl: "MEDUEC659772", amt: "$161,571", etd1: "2/3", eta1: "3/17", etd2: "4/12", eta2: "4/27", status: "在途", pay: "已付", impCnt: 8, expCnt: 4, pallets: 158, boxes: 2528, pcs: 40448, remark: "1-5批次已结。堆叠方案。口头通知延误至4/27。" },
-        { id: "4", type: "Cell", bl: "265694038", amt: "$239,953", etd1: "2/9", eta1: "3/25", etd2: "4/16", eta2: "4/26", status: "在途", pay: "已付", impCnt: 12, expCnt: 6, pallets: 240, boxes: 3840, pcs: 61440, remark: "1-5批次已结。新加坡延误22天，ETA 修正为 4/26。" },
-        { id: "5", type: "Cell", bl: "265991654", amt: "$199,961", etd1: "2/15", eta1: "4/16", etd2: "4/26", eta2: "5/11", status: "在途", pay: "已付", impCnt: 10, expCnt: 5, pallets: 200, boxes: 3200, pcs: 51200, remark: "1-5批次已结。堆叠出口计划更新：4/26离港。" },
-        { id: "6", type: "Cell", bl: "MEDUEC662941", amt: "$99,980", etd1: "3/3", eta1: "5/2", etd2: "待定", eta2: "待定", status: "在途", pay: "已付", impCnt: 8, expCnt: 4, pallets: 160, boxes: 2560, pcs: 40960, remark: "6-10批次已结。航程严重延误。" },
-        { id: "7", type: "Cell", bl: "266155136", amt: "$139,973", etd1: "2/24", eta1: "4/7", etd2: "4/25", eta2: "5/6", status: "在新", pay: "已付", impCnt: 7, expCnt: 4, pallets: 140, boxes: 2240, pcs: 35840, remark: "6-10批次已结。更新：预计4/25离港，5/6抵达。" },
-        { id: "8", type: "Cell", bl: "MEDUEC663659", amt: "$99,980", etd1: "3/5", eta1: "5/18", etd2: "待定", eta2: "待定", status: "在途", pay: "已付", impCnt: 10, expCnt: 5, pallets: 200, boxes: 3200, pcs: 51200, remark: "6-10批次已结。" },
-        { id: "9", type: "Cell", bl: "266370578", amt: "$139,973", etd1: "3/1", eta1: "4/18", etd2: "4/26", eta2: "5/11", status: "在途", pay: "已付", impCnt: 7, expCnt: 4, pallets: 140, boxes: 2240, pcs: 35840, remark: "6-10批次已结。" },
-        { id: "10", type: "Cell", bl: "266510640", amt: "$159,969", etd1: "3/8", eta1: "4/21", etd2: "4/28", eta2: "5/8", status: "在途", pay: "已付", impCnt: 10, expCnt: 5, pallets: 200, boxes: 3200, pcs: 51200, remark: "6-10批次已结。4/28 离新。" },
-        { id: "11", type: "Cell", bl: "266738992", amt: "$279,946", etd1: "3/16", eta1: "4/30", etd2: "待定", eta2: "待定", status: "在途", pay: "待付", impCnt: 14, expCnt: 7, pallets: 280, boxes: 4480, pcs: 71680, remark: "11-15 待付。每批约$280k。" },
-        { id: "12", type: "Cell", bl: "267045813", amt: "$279,946", etd1: "3/20", eta1: "5/4", etd2: "待定", eta2: "待定", status: "在途", pay: "待付", impCnt: 14, expCnt: 7, pallets: 280, boxes: 4480, pcs: 71680, remark: "11-15 待付。" },
-        { id: "13", type: "Cell", bl: "267324659", amt: "$279,946", etd1: "3/25", eta1: "5/9", etd2: "待定", eta2: "待定", status: "在途", pay: "待付", impCnt: 14, expCnt: 7, pallets: 280, boxes: 4480, pcs: 71680, remark: "11-15 待付。" },
-        { id: "14", type: "Cell", bl: "267593814", amt: "$119,976", etd1: "4/9", eta1: "5/26", etd2: "待定", eta2: "待定", status: "在途", pay: "待付", impCnt: 6, expCnt: 3, pallets: 120, boxes: 1920, pcs: 30720, remark: "11-15 待付。" },
-        { id: "15", type: "Cell", bl: "267699290", amt: "$279,946", etd1: "4/24", eta1: "5/28", etd2: "待定", eta2: "待定", status: "在途", pay: "待付", impCnt: 14, expCnt: 7, pallets: 280, boxes: 4480, pcs: 71680, remark: "最新 Lot 15 刚离欧洲。Vessel: AL MURABBA 617E。" }
-    ];
+    let lotsData = [];
+    let financeChart = null;
 
-    function init() {
+    const moneyFormatter = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        maximumFractionDigits: 2
+    });
+
+    const numberFormatter = new Intl.NumberFormat('en-US');
+
+    async function init() {
+        try {
+            const response = await fetch('data/lots.json', { cache: 'no-store' });
+            if (!response.ok) {
+                throw new Error(`无法读取 data/lots.json (${response.status})`);
+            }
+
+            const payload = await response.json();
+            lotsData = payload.lots || [];
+
+            if (!lotsData.length) {
+                throw new Error('data/lots.json 中没有批次数据');
+            }
+
+            renderHeader(payload);
+            renderSummary(payload);
+            renderLotList();
+            selectLot(lotsData[lotsData.length - 1]);
+            renderChart(payload);
+        } catch (error) {
+            showError(error);
+        }
+    }
+
+    function renderHeader(payload) {
+        const lotLabel = payload.lotRange || `${lotsData[0].id}-${lotsData[lotsData.length - 1].id}`;
+        document.getElementById('pageTitle').innerText = `CNGR 新加坡转口贸易监控：${lotLabel} 全批次看板`;
+        document.getElementById('pageSubtitle').innerText = `数据基准日: ${payload.generatedAt || '-'} | ${lotsData.length} 条批次记录 | Excel 自动生成`;
+    }
+
+    function renderSummary(payload) {
+        const groups = payload.summaryGroups || buildSummaryGroups(lotsData);
+        const alertLot = findAlertLot(lotsData);
+        const latestLot = lotsData[lotsData.length - 1];
+        const grid = document.getElementById('summaryGrid');
+
+        grid.innerHTML = `
+            ${groups.map((group, index) => `
+                <div class="card ${group.cardClass || ['success', 'carbon', 'danger'][index] || ''}">
+                    <label>${group.label}</label>
+                    <h2>${moneyFormatter.format(group.importAmount || 0)}</h2>
+                    <p>${group.description}</p>
+                </div>
+            `).join('')}
+            <div class="card warning">
+                <label>重点预警 / 最新节点</label>
+                <h2>${alertLot ? `Lot ${alertLot.id}` : `Lot ${latestLot.id}`}</h2>
+                <p>${alertLot ? alertLot.remark : latestLot.remark}</p>
+            </div>
+        `;
+    }
+
+    function buildSummaryGroups(lots) {
+        const definitions = [
+            { label: '1-5 批次进口金额', min: 1, max: 5, cardClass: 'success' },
+            { label: '6-10 批次进口金额', min: 6, max: 10.999, cardClass: 'carbon' },
+            { label: '11+ 批次进口金额', min: 11, max: Infinity, cardClass: 'danger' }
+        ];
+
+        return definitions.map(def => {
+            const groupLots = lots.filter(lot => lot.idNumber >= def.min && lot.idNumber <= def.max);
+            return {
+                ...def,
+                importAmount: sum(groupLots, 'importAmount'),
+                description: summarizeStatuses(groupLots)
+            };
+        });
+    }
+
+    function renderLotList() {
         const listContainer = document.getElementById('lotItems');
+        listContainer.innerHTML = '';
+
         lotsData.forEach(lot => {
             const div = document.createElement('div');
             div.className = 'lot-item';
             div.id = `item-${lot.id}`;
-            const color = lot.status === '抵沪' ? 'var(--success)' : (lot.status === '在新' ? 'var(--warning)' : 'var(--primary)');
+            const color = statusColor(lot.status);
             div.innerHTML = `
                 <div style="color:${color}; font-weight:600;"><span class="status-dot" style="background:${color}"></span>Lot ${lot.id}</div>
                 <div style="font-size:0.75rem; color:${color}">${lot.status}</div>
@@ -163,85 +203,143 @@
             div.onclick = () => selectLot(lot);
             listContainer.appendChild(div);
         });
-        selectLot(lotsData[lotsData.length - 1]); 
-        renderChart();
     }
 
     function selectLot(lot) {
-        document.querySelectorAll('.lot-item').forEach(i => i.classList.remove('active'));
+        document.querySelectorAll('.lot-item').forEach(item => item.classList.remove('active'));
         const activeItem = document.getElementById(`item-${lot.id}`);
-        if(activeItem) activeItem.classList.add('active');
-        
-        document.getElementById('lotTitle').innerText = `Batch Detail: Lot ${lot.id} (${lot.type})`;
-        document.getElementById('remarkContent').innerText = lot.remark;
-        
-        document.getElementById('t-etd1').innerText = lot.etd1;
-        document.getElementById('t-eta1').innerText = lot.eta1;
-        document.getElementById('t-etd2').innerText = lot.etd2;
-        document.getElementById('t-eta2').innerText = lot.eta2;
+        if (activeItem) activeItem.classList.add('active');
 
-        const infoGrid = document.getElementById('infoGrid');
-        infoGrid.innerHTML = `
-            <div class="info-item"><label>提单号</label><span>${lot.bl}</span></div>
-            <div class="info-item"><label>资金支付状态</label><span class="tag tag-green">${lot.pay}</span></div>
-            <div class="info-item"><label>物流状态节点</label><span style="color:var(--primary)">${lot.status}</span></div>
-            
-            <div class="info-item highlight-data"><label>进口箱数 (RF)</label><span>${lot.impCnt} 个</span></div>
-            <div class="info-item highlight-data"><label>出口堆叠 HQ</label><span>${lot.expCnt} 个</span></div>
-            <div class="info-item highlight-data"><label>总托数 (PLT)</label><span>${lot.pallets} 托</span></div>
-            
-            <div class="info-item"><label>纸箱数 (Box)</label><span>${lot.boxes} 箱</span></div>
-            <div class="info-item"><label>电池总件数 (PCS)</label><span>${lot.pcs.toLocaleString()}</span></div>
-            <div class="info-item"><label>到港预判 (ETA)</label><span style="color:var(--danger)">${lot.eta2}</span></div>
-            
-            <div class="info-item"><label>换算规则</label><span>${lot.type==='Module'?'1箱=24电芯':'1箱=16电芯'}</span></div>
-            <div class="info-item"><label>货值金额</label><span>${lot.amt}</span></div>
-            <div class="info-item"><label>操作模式</label><span>${lot.expCnt < lot.impCnt ? '双层堆叠' : '单层平铺'}</span></div>
+        document.getElementById('lotTitle').innerText = `Batch Detail: Lot ${lot.id} (${lot.type})`;
+        document.getElementById('remarkContent').innerText = lot.remark || '-';
+        document.getElementById('t-etd1').innerText = lot.europeEtd || '-';
+        document.getElementById('t-eta1').innerText = lot.singaporeEta || '-';
+        document.getElementById('t-etd2').innerText = lot.singaporeEtd || '-';
+        document.getElementById('t-eta2').innerText = lot.shanghaiEta || '-';
+
+        document.getElementById('infoGrid').innerHTML = `
+            <div class="info-item"><label>出口批次</label><span>${lot.exportLot || '-'}</span></div>
+            <div class="info-item"><label>资金支付状态</label><span class="tag ${lot.pay === '已付' ? 'tag-green' : 'tag-red'}">${lot.pay}</span></div>
+            <div class="info-item"><label>物流状态节点</label><span style="color:${statusColor(lot.status)}">${lot.status}</span></div>
+
+            <div class="info-item highlight-data"><label>进口箱数 (RF)</label><span>${formatNumber(lot.importContainers)} 个</span></div>
+            <div class="info-item highlight-data"><label>出口堆叠 HQ</label><span>${formatNumber(lot.exportContainers)} 个</span></div>
+            <div class="info-item highlight-data"><label>节省柜数</label><span>${formatNumber(lot.savedContainers)} 个</span></div>
+
+            <div class="info-item"><label>总托数 (PLT)</label><span>${formatNumber(lot.pallets)} 托</span></div>
+            <div class="info-item"><label>纸箱数 (Box)</label><span>${formatNumber(lot.boxes)} 箱</span></div>
+            <div class="info-item"><label>出口件数 (PCS)</label><span>${formatNumber(lot.exportPcs)}</span></div>
+
+            <div class="info-item"><label>发沪净重 (KG)</label><span>${formatNumber(lot.netWeightKg)}</span></div>
+            <div class="info-item"><label>发沪毛重 (KG)</label><span>${formatNumber(lot.grossWeightKg)}</span></div>
+            <div class="info-item"><label>二程发沪船名</label><span>${lot.secondLegVessel || '-'}</span></div>
+
+            <div class="info-item"><label>到沪电芯单价</label><span>${moneyFormatter.format(lot.shanghaiUnitPrice || 0)}</span></div>
+            <div class="info-item"><label>进口发票金额</label><span>${moneyFormatter.format(lot.importAmount || 0)}</span></div>
+            <div class="info-item"><label>到沪销售总价</label><span>${moneyFormatter.format(lot.shanghaiSalesAmount || 0)}</span></div>
         `;
 
-        updateTimeline(lot.status, lot.etd2);
+        updateTimeline(lot);
     }
 
-    function updateTimeline(status, etd2) {
-        const nodes = ['n1','n2','n3','n4'];
-        nodes.forEach(n => document.getElementById(n).className = 'node');
-        if (status === '抵沪') {
-            nodes.forEach(n => document.getElementById(n).classList.add('passed'));
-        } else if (status === '在新') {
-            ['n1','n2'].forEach(n => document.getElementById(n).classList.add('passed'));
-            document.getElementById('n3').classList.add('current');
-        } else if (status === '在途' && etd2 !== '待定' && !etd2.includes('P')) {
-            ['n1','n2','n3'].forEach(n => document.getElementById(n).classList.add('passed'));
+    function updateTimeline(lot) {
+        const nodes = ['n1', 'n2', 'n3', 'n4'];
+        nodes.forEach(node => document.getElementById(node).className = 'node');
+
+        if (lot.stage === 'arrived_shanghai') {
+            nodes.forEach(node => document.getElementById(node).classList.add('passed'));
+        } else if (lot.stage === 'in_second_leg') {
+            ['n1', 'n2', 'n3'].forEach(node => document.getElementById(node).classList.add('passed'));
             document.getElementById('n4').classList.add('current');
+        } else if (lot.stage === 'in_singapore') {
+            ['n1', 'n2'].forEach(node => document.getElementById(node).classList.add('passed'));
+            document.getElementById('n3').classList.add('current');
         } else {
             document.getElementById('n1').classList.add('passed');
             document.getElementById('n2').classList.add('current');
         }
     }
 
-    function renderChart() {
+    function renderChart(payload) {
+        const groups = payload.summaryGroups || buildSummaryGroups(lotsData);
         const ctx = document.getElementById('financeChart').getContext('2d');
-        new Chart(ctx, {
+        const colors = [
+            ['rgba(5, 150, 105, 0.75)', '#059669'],
+            ['rgba(139, 92, 246, 0.75)', '#8b5cf6'],
+            ['rgba(220, 38, 38, 0.75)', '#dc2626']
+        ];
+
+        if (financeChart) {
+            financeChart.destroy();
+        }
+
+        financeChart = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: ['1-5 批次', '6-10 批次', '11-15 批次'],
+                labels: groups.map(group => group.shortLabel || group.label),
                 datasets: [{
-                    label: '金额 (USD)',
-                    data: [1241423.09, 679969.44, 1239761.92],
-                    backgroundColor: ['rgba(5, 150, 105, 0.75)', 'rgba(139, 92, 246, 0.75)', 'rgba(220, 38, 38, 0.75)'],
-                    borderColor: ['#059669', '#8b5cf6', '#dc2626'],
-                    borderWidth: 1.5, borderRadius: 5
+                    label: '进口发票金额 (USD)',
+                    data: groups.map(group => group.importAmount || 0),
+                    backgroundColor: groups.map((_, index) => colors[index % colors.length][0]),
+                    borderColor: groups.map((_, index) => colors[index % colors.length][1]),
+                    borderWidth: 1.5,
+                    borderRadius: 5
                 }]
             },
             options: {
-                responsive: true, maintainAspectRatio: false,
+                responsive: true,
+                maintainAspectRatio: false,
                 scales: {
-                    y: { beginAtZero: true, grid: { color: '#f1f5f9' }, ticks: { font: { size: 10 }, callback: value => '$' + (value/1000) + 'k' } },
+                    y: { beginAtZero: true, grid: { color: '#f1f5f9' }, ticks: { font: { size: 10 }, callback: value => '$' + (value / 1000) + 'k' } },
                     x: { grid: { display: false }, ticks: { font: { size: 11, weight: 'bold' } } }
                 },
-                plugins: { legend: { display: false }, tooltip: { callbacks: { label: context => `金额: $${context.raw.toLocaleString()}` } } }
+                plugins: { legend: { display: false }, tooltip: { callbacks: { label: context => `金额: ${moneyFormatter.format(context.raw)}` } } }
             }
         });
+
+        document.getElementById('chartLegend').innerHTML = groups.map((group, index) => `
+            <div style="margin-bottom: 10px;"><span style="color:${colors[index % colors.length][1]}">■</span> ${group.label}：${group.description}</div>
+        `).join('');
+    }
+
+    function statusColor(status) {
+        if (status === '抵沪') return 'var(--success)';
+        if (status === '在新') return 'var(--warning)';
+        if (status === '待排') return 'var(--danger)';
+        return 'var(--primary)';
+    }
+
+    function summarizeStatuses(lots) {
+        if (!lots.length) return '暂无数据';
+        const counts = lots.reduce((acc, lot) => {
+            acc[lot.status] = (acc[lot.status] || 0) + 1;
+            return acc;
+        }, {});
+        return Object.entries(counts).map(([status, count]) => `${count} 票${status}`).join(' | ');
+    }
+
+    function findAlertLot(lots) {
+        return lots.find(lot => /延误|严重|待跟进|待确认|待定/.test(lot.remark || lot.status || ''));
+    }
+
+    function sum(items, key) {
+        return items.reduce((total, item) => total + (Number(item[key]) || 0), 0);
+    }
+
+    function formatNumber(value) {
+        if (value === null || value === undefined || value === '') return '-';
+        return numberFormatter.format(value);
+    }
+
+    function showError(error) {
+        document.getElementById('errorBox').innerHTML = `
+            <div class="error">
+                数据加载失败：${error.message}<br>
+                如果是在本机直接双击打开 HTML，请先运行本地预览服务器，或通过 GitHub Pages 查看。
+            </div>
+        `;
+        document.getElementById('summaryGrid').innerHTML = '';
+        document.getElementById('lotItems').innerHTML = '<div class="loading">暂无数据</div>';
     }
 
     window.onload = init;
