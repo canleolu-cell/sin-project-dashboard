@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-18 02:44",
+  "generatedAt": "2026-05-28 09:38",
   "sourceFile": "lot-details.xlsx",
   "lotRange": "Lot 1-17",
   "totals": {
@@ -19,7 +19,7 @@
       "importContainers": 46,
       "exportContainers": 31,
       "savedContainers": 15,
-      "description": "3 票抵沪 | 2 票在途"
+      "description": "5 票抵沪"
     },
     {
       "label": "6-10 批次进口金额",
@@ -30,7 +30,7 @@
       "importContainers": 34,
       "exportContainers": 19,
       "savedContainers": 15,
-      "description": "1 票在新 | 5 票在途"
+      "description": "5 票抵沪 | 1 票在途"
     },
     {
       "label": "11+ 批次进口金额",
@@ -41,7 +41,7 @@
       "importContainers": 90,
       "exportContainers": 45,
       "savedContainers": 45,
-      "description": "3 票在途 | 2 票在新 | 2 票待排"
+      "description": "2 票抵沪 | 3 票在途 | 2 票待排"
     }
   ],
   "lots": [
@@ -127,10 +127,10 @@
       "secondLegVessel": "COSCO COLOMBO",
       "singaporeEtd": "4月2日",
       "shanghaiEta": "4月27日",
-      "status": "在途",
-      "stage": "in_second_leg",
+      "status": "抵沪",
+      "stage": "arrived_shanghai",
       "pay": "已付",
-      "remark": "二程严重延误 10 天"
+      "remark": "已抵上海"
     },
     {
       "id": "4",
@@ -185,10 +185,10 @@
       "secondLegVessel": "OOCL ABU DHABI",
       "singaporeEtd": "4月26日",
       "shanghaiEta": "5月11日",
-      "status": "在途",
-      "stage": "in_second_leg",
+      "status": "抵沪",
+      "stage": "arrived_shanghai",
       "pay": "已付",
-      "remark": "二程在途 (合并装运)"
+      "remark": "已抵上海"
     },
     {
       "id": "6",
@@ -212,12 +212,12 @@
       "europeEtd": "3月3日",
       "singaporeEta": "5月2日",
       "secondLegVessel": "待定",
-      "singaporeEtd": "待定",
-      "shanghaiEta": "待定",
-      "status": "在新",
-      "stage": "in_singapore",
+      "singaporeEtd": "2026-05-11",
+      "shanghaiEta": "2026-05-17",
+      "status": "抵沪",
+      "stage": "arrived_shanghai",
       "pay": "已付",
-      "remark": "头程严重延误 17 天"
+      "remark": "已抵上海"
     },
     {
       "id": "7",
@@ -243,10 +243,10 @@
       "secondLegVessel": "EVER OPTIMA",
       "singaporeEtd": "4月22日",
       "shanghaiEta": "5月3日",
-      "status": "在途",
-      "stage": "in_second_leg",
+      "status": "抵沪",
+      "stage": "arrived_shanghai",
       "pay": "已付",
-      "remark": "二程在途 (早于Lot5发运)"
+      "remark": "已抵上海"
     },
     {
       "id": "8",
@@ -254,7 +254,7 @@
       "product": "电池电芯",
       "type": "Cell",
       "importAmount": 99980.8,
-      "exportLot": "待定 (TBD)",
+      "exportLot": "Export lot 10",
       "importContainers": 5,
       "exportContainers": 3,
       "savedContainers": 2,
@@ -270,12 +270,12 @@
       "europeEtd": "3月5日",
       "singaporeEta": "5月20日",
       "secondLegVessel": "待定",
-      "singaporeEtd": "待定",
-      "shanghaiEta": "待定",
+      "singaporeEtd": "2026-06-09",
+      "shanghaiEta": "2026-06-19",
       "status": "在途",
-      "stage": "first_leg",
+      "stage": "in_second_leg",
       "pay": "已付",
-      "remark": "头程极度延误 32 天"
+      "remark": "已经订舱"
     },
     {
       "id": "9",
@@ -301,10 +301,10 @@
       "secondLegVessel": "OOCL ABU DHABI",
       "singaporeEtd": "4月26日",
       "shanghaiEta": "5月11日",
-      "status": "在途",
-      "stage": "in_second_leg",
+      "status": "抵沪",
+      "stage": "arrived_shanghai",
       "pay": "已付",
-      "remark": "二程在途 (合并装运)"
+      "remark": "已抵上海"
     },
     {
       "id": "10.1",
@@ -330,10 +330,10 @@
       "secondLegVessel": "EVER LUNAR",
       "singaporeEtd": "4月26日",
       "shanghaiEta": "5月11日",
-      "status": "在途",
-      "stage": "in_second_leg",
+      "status": "抵沪",
+      "stage": "arrived_shanghai",
       "pay": "已付",
-      "remark": "二程在途 (合并装运)"
+      "remark": "已抵上海"
     },
     {
       "id": "10.2",
@@ -359,10 +359,10 @@
       "secondLegVessel": "OOCL ABU DHABI",
       "singaporeEtd": "5月1日",
       "shanghaiEta": "5月11日",
-      "status": "在途",
-      "stage": "in_second_leg",
+      "status": "抵沪",
+      "stage": "arrived_shanghai",
       "pay": "已付",
-      "remark": "二程排期锁定"
+      "remark": "已抵上海"
     },
     {
       "id": "11",
@@ -388,10 +388,10 @@
       "secondLegVessel": "MSK",
       "singaporeEtd": "2026-05-11",
       "shanghaiEta": "5月17日",
-      "status": "在途",
-      "stage": "in_second_leg",
+      "status": "抵沪",
+      "stage": "arrived_shanghai",
       "pay": "已付",
-      "remark": "头程抵达，二程锁定"
+      "remark": "已抵上海"
     },
     {
       "id": "12",
@@ -399,7 +399,7 @@
       "product": "电池电芯",
       "type": "Cell",
       "importAmount": 279946.24,
-      "exportLot": "待定 (TBD)",
+      "exportLot": "Export lot 8",
       "importContainers": 14,
       "exportContainers": 7,
       "savedContainers": 7,
@@ -414,13 +414,13 @@
       "shanghaiSalesAmount": 329728.0,
       "europeEtd": "3月22日",
       "singaporeEta": "5月9日",
-      "secondLegVessel": "Cosco",
+      "secondLegVessel": "MSK",
       "singaporeEtd": "5/18/2026 暂定",
-      "shanghaiEta": "待定",
-      "status": "在新",
-      "stage": "in_singapore",
+      "shanghaiEta": "2026-05-28",
+      "status": "抵沪",
+      "stage": "arrived_shanghai",
       "pay": "已付",
-      "remark": "正常在途"
+      "remark": "已抵上海"
     },
     {
       "id": "13",
@@ -428,7 +428,7 @@
       "product": "电池电芯",
       "type": "Cell",
       "importAmount": 279946.24,
-      "exportLot": "待定 (TBD)",
+      "exportLot": "Export lot 9",
       "importContainers": 14,
       "exportContainers": 7,
       "savedContainers": 7,
@@ -443,13 +443,13 @@
       "shanghaiSalesAmount": 329728.0,
       "europeEtd": "3月29日",
       "singaporeEta": "5月12日",
-      "secondLegVessel": "待定",
-      "singaporeEtd": "5/18/2026 暂定",
-      "shanghaiEta": "待定",
-      "status": "在新",
-      "stage": "in_singapore",
+      "secondLegVessel": "MSK",
+      "singaporeEtd": "2026-05-25",
+      "shanghaiEta": "2026-06-02",
+      "status": "在途",
+      "stage": "in_second_leg",
       "pay": "预计付款 5/20",
-      "remark": "正常在途"
+      "remark": "在途"
     },
     {
       "id": "14",
@@ -457,7 +457,7 @@
       "product": "电池电芯",
       "type": "Cell",
       "importAmount": 119976.96,
-      "exportLot": "待定 (TBD)",
+      "exportLot": "Export Lot 10",
       "importContainers": 6,
       "exportContainers": 3,
       "savedContainers": 3,
@@ -472,13 +472,13 @@
       "shanghaiSalesAmount": 141312.0,
       "europeEtd": "4月9日",
       "singaporeEta": "5月26日",
-      "secondLegVessel": "待定",
-      "singaporeEtd": "待定",
-      "shanghaiEta": "待定",
+      "secondLegVessel": "CSSCO",
+      "singaporeEtd": "2026-06-09",
+      "shanghaiEta": "2026-06-19",
       "status": "在途",
-      "stage": "first_leg",
+      "stage": "in_second_leg",
       "pay": "预计付款 5/20",
-      "remark": "头程延误 2 天"
+      "remark": "已经订舱"
     },
     {
       "id": "15",
