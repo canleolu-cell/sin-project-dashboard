@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -44,6 +44,7 @@
         .tag { padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; display: inline-block; }
         .tag-red { background: #fee2e2; color: #991b1b; }
         .tag-green { background: #dcfce7; color: #166534; }
+        .tag-orange { background: #ffedd5; color: #9a3412; }
         .chart-side { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
         .loading { padding: 24px; color: #64748b; text-align: center; }
         .error { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; border-radius: 8px; padding: 16px; margin-bottom: 20px; }
@@ -219,7 +220,7 @@
 
         document.getElementById('infoGrid').innerHTML = `
             <div class="info-item"><label>出口批次</label><span>${lot.exportLot || '-'}</span></div>
-            <div class="info-item"><label>资金支付状态</label><span class="tag ${lot.pay === '已付' ? 'tag-green' : 'tag-red'}">${lot.pay}</span></div>
+            <div class="info-item"><label>资金支付状态</label><span class="tag ${paymentTagClass(lot.pay)}">${lot.pay}</span></div>
             <div class="info-item"><label>物流状态节点</label><span style="color:${statusColor(lot.status)}">${lot.status}</span></div>
 
             <div class="info-item highlight-data"><label>进口箱数 (RF)</label><span>${formatNumber(lot.importContainers)} 个</span></div>
@@ -261,13 +262,8 @@
     }
 
     function renderChart(payload) {
-        const groups = payload.summaryGroups || buildSummaryGroups(lotsData);
+        const groups = buildPaymentGroups(lotsData);
         const ctx = document.getElementById('financeChart').getContext('2d');
-        const colors = [
-            ['rgba(5, 150, 105, 0.75)', '#059669'],
-            ['rgba(139, 92, 246, 0.75)', '#8b5cf6'],
-            ['rgba(220, 38, 38, 0.75)', '#dc2626']
-        ];
 
         if (financeChart) {
             financeChart.destroy();
@@ -276,30 +272,88 @@
         financeChart = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: groups.map(group => group.shortLabel || group.label),
-                datasets: [{
-                    label: '进口发票金额 (USD)',
-                    data: groups.map(group => group.importAmount || 0),
-                    backgroundColor: groups.map((_, index) => colors[index % colors.length][0]),
-                    borderColor: groups.map((_, index) => colors[index % colors.length][1]),
-                    borderWidth: 1.5,
-                    borderRadius: 5
-                }]
+                labels: groups.map(group => group.shortLabel),
+                datasets: [
+                    {
+                        label: '已付款',
+                        data: groups.map(group => group.paidAmount),
+                        backgroundColor: 'rgba(5, 150, 105, 0.78)',
+                        borderColor: '#059669',
+                        borderWidth: 1,
+                        borderRadius: 5
+                    },
+                    {
+                        label: '预计付款',
+                        data: groups.map(group => group.scheduledAmount),
+                        backgroundColor: 'rgba(217, 119, 6, 0.78)',
+                        borderColor: '#d97706',
+                        borderWidth: 1,
+                        borderRadius: 5
+                    },
+                    {
+                        label: '待付款',
+                        data: groups.map(group => group.unpaidAmount),
+                        backgroundColor: 'rgba(220, 38, 38, 0.78)',
+                        borderColor: '#dc2626',
+                        borderWidth: 1,
+                        borderRadius: 5
+                    }
+                ]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
                 scales: {
-                    y: { beginAtZero: true, grid: { color: '#f1f5f9' }, ticks: { font: { size: 10 }, callback: value => '$' + (value / 1000) + 'k' } },
-                    x: { grid: { display: false }, ticks: { font: { size: 11, weight: 'bold' } } }
+                    x: { stacked: true, grid: { display: false }, ticks: { font: { size: 11, weight: 'bold' } } },
+                    y: { stacked: true, beginAtZero: true, grid: { color: '#f1f5f9' }, ticks: { font: { size: 10 }, callback: value => '$' + (value / 1000) + 'k' } }
                 },
-                plugins: { legend: { display: false }, tooltip: { callbacks: { label: context => `金额: ${moneyFormatter.format(context.raw)}` } } }
+                plugins: {
+                    legend: { display: true, position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } },
+                    tooltip: { callbacks: { label: context => `${context.dataset.label}: ${moneyFormatter.format(context.raw)}` } }
+                }
             }
         });
 
-        document.getElementById('chartLegend').innerHTML = groups.map((group, index) => `
-            <div style="margin-bottom: 10px;"><span style="color:${colors[index % colors.length][1]}">■</span> ${group.label}：${group.description}</div>
+        document.getElementById('chartLegend').innerHTML = groups.map(group => `
+            <div style="margin-bottom: 10px;">
+                <strong>${group.label}</strong><br>
+                <span style="color:var(--success)">■</span> 已付 ${moneyFormatter.format(group.paidAmount)}
+                <span style="color:var(--warning); margin-left:8px">■</span> 预计 ${moneyFormatter.format(group.scheduledAmount)}
+                <span style="color:var(--danger); margin-left:8px">■</span> 待付 ${moneyFormatter.format(group.unpaidAmount)}
+            </div>
         `).join('');
+    }
+
+    function buildPaymentGroups(lots) {
+        const definitions = [
+            { label: '1-5 批次付款状态', shortLabel: '1-5 批次', min: 1, max: 5 },
+            { label: '6-10 批次付款状态', shortLabel: '6-10 批次', min: 6, max: 10.999 },
+            { label: '11+ 批次付款状态', shortLabel: '11+ 批次', min: 11, max: Infinity }
+        ];
+
+        return definitions.map(def => {
+            const groupLots = lots.filter(lot => lot.idNumber >= def.min && lot.idNumber <= def.max);
+            return {
+                ...def,
+                paidAmount: sum(groupLots.filter(lot => paymentBucket(lot.pay) === 'paid'), 'importAmount'),
+                scheduledAmount: sum(groupLots.filter(lot => paymentBucket(lot.pay) === 'scheduled'), 'importAmount'),
+                unpaidAmount: sum(groupLots.filter(lot => paymentBucket(lot.pay) === 'unpaid'), 'importAmount')
+            };
+        });
+    }
+
+    function paymentBucket(pay) {
+        const text = String(pay || '').toLowerCase();
+        if (text === '已付' || text === 'paid' || text === 'yes') return 'paid';
+        if (text.includes('预计') || text.includes('estimate') || text.includes('6/3')) return 'scheduled';
+        return 'unpaid';
+    }
+
+    function paymentTagClass(pay) {
+        const bucket = paymentBucket(pay);
+        if (bucket === 'paid') return 'tag-green';
+        if (bucket === 'scheduled') return 'tag-orange';
+        return 'tag-red';
     }
 
     function statusColor(status) {
@@ -346,3 +400,4 @@
 </script>
 </body>
 </html>
+
