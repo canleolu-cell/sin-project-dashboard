@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-28 09:38",
+  "generatedAt": "2026-05-28 10:01",
   "sourceFile": "lot-details.xlsx",
   "lotRange": "Lot 1-17",
   "totals": {
@@ -448,7 +448,7 @@
       "shanghaiEta": "2026-06-02",
       "status": "在途",
       "stage": "in_second_leg",
-      "pay": "预计付款 5/20",
+      "pay": "已付",
       "remark": "在途"
     },
     {
@@ -477,7 +477,7 @@
       "shanghaiEta": "2026-06-19",
       "status": "在途",
       "stage": "in_second_leg",
-      "pay": "预计付款 5/20",
+      "pay": "已付",
       "remark": "已经订舱"
     },
     {
@@ -506,7 +506,7 @@
       "shanghaiEta": "待定",
       "status": "待排",
       "stage": "first_leg",
-      "pay": "待付",
+      "pay": "待付款",
       "remark": "上游排期待跟进"
     },
     {
@@ -535,7 +535,7 @@
       "shanghaiEta": "待定",
       "status": "待排",
       "stage": "first_leg",
-      "pay": "待付",
+      "pay": "待付款",
       "remark": "新单接入(BL:269501684)"
     },
     {
@@ -564,7 +564,7 @@
       "shanghaiEta": "待定",
       "status": "在途",
       "stage": "first_leg",
-      "pay": "待付",
+      "pay": "待付款",
       "remark": "新单接入(BL:269748417)"
     }
   ]
