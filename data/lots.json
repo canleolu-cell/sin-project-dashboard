@@ -1,13 +1,13 @@
 {
-  "generatedAt": "2026-05-28 10:01",
+  "generatedAt": "2026-06-08 11:35",
   "sourceFile": "lot-details.xlsx",
-  "lotRange": "Lot 1-17",
+  "lotRange": "Lot 1-18",
   "totals": {
-    "lotCount": 18,
-    "importAmount": 3720946.93,
-    "importContainers": 170,
-    "exportContainers": 95,
-    "savedContainers": 75
+    "lotCount": 19,
+    "importAmount": 3873917.7,
+    "importContainers": 178,
+    "exportContainers": 99,
+    "savedContainers": 79
   },
   "summaryGroups": [
     {
@@ -30,18 +30,18 @@
       "importContainers": 34,
       "exportContainers": 19,
       "savedContainers": 15,
-      "description": "5 票抵沪 | 1 票在途"
+      "description": "6 票抵沪"
     },
     {
       "label": "11+ 批次进口金额",
       "shortLabel": "11+ 批次",
       "cardClass": "danger",
-      "lotCount": 7,
-      "importAmount": 1799654.4,
-      "importContainers": 90,
-      "exportContainers": 45,
-      "savedContainers": 45,
-      "description": "2 票抵沪 | 3 票在途 | 2 票待排"
+      "lotCount": 8,
+      "importAmount": 1952625.17,
+      "importContainers": 98,
+      "exportContainers": 49,
+      "savedContainers": 49,
+      "description": "2 票抵沪 | 3 票在途 | 1 票在新 | 2 票待排"
     }
   ],
   "lots": [
@@ -212,8 +212,8 @@
       "europeEtd": "3月3日",
       "singaporeEta": "5月2日",
       "secondLegVessel": "待定",
-      "singaporeEtd": "2026-05-11",
-      "shanghaiEta": "2026-05-17",
+      "singaporeEtd": "待定",
+      "shanghaiEta": "2026-05-28",
       "status": "抵沪",
       "stage": "arrived_shanghai",
       "pay": "已付",
@@ -254,7 +254,7 @@
       "product": "电池电芯",
       "type": "Cell",
       "importAmount": 99980.8,
-      "exportLot": "Export lot 10",
+      "exportLot": "export lot 10",
       "importContainers": 5,
       "exportContainers": 3,
       "savedContainers": 2,
@@ -270,12 +270,12 @@
       "europeEtd": "3月5日",
       "singaporeEta": "5月20日",
       "secondLegVessel": "待定",
-      "singaporeEtd": "2026-06-09",
+      "singaporeEtd": "待定",
       "shanghaiEta": "2026-06-19",
-      "status": "在途",
-      "stage": "in_second_leg",
+      "status": "抵沪",
+      "stage": "arrived_shanghai",
       "pay": "已付",
-      "remark": "已经订舱"
+      "remark": "已抵上海"
     },
     {
       "id": "9",
@@ -387,7 +387,7 @@
       "singaporeEta": "4月28日",
       "secondLegVessel": "MSK",
       "singaporeEtd": "2026-05-11",
-      "shanghaiEta": "5月17日",
+      "shanghaiEta": "5月19日",
       "status": "抵沪",
       "stage": "arrived_shanghai",
       "pay": "已付",
@@ -414,7 +414,7 @@
       "shanghaiSalesAmount": 329728.0,
       "europeEtd": "3月22日",
       "singaporeEta": "5月9日",
-      "secondLegVessel": "MSK",
+      "secondLegVessel": "Cosco",
       "singaporeEtd": "5/18/2026 暂定",
       "shanghaiEta": "2026-05-28",
       "status": "抵沪",
@@ -428,7 +428,7 @@
       "product": "电池电芯",
       "type": "Cell",
       "importAmount": 279946.24,
-      "exportLot": "Export lot 9",
+      "exportLot": "Export Lot 9",
       "importContainers": 14,
       "exportContainers": 7,
       "savedContainers": 7,
@@ -443,13 +443,13 @@
       "shanghaiSalesAmount": 329728.0,
       "europeEtd": "3月29日",
       "singaporeEta": "5月12日",
-      "secondLegVessel": "MSK",
-      "singaporeEtd": "2026-05-25",
+      "secondLegVessel": "待定",
+      "singaporeEtd": "5/18/2026 暂定",
       "shanghaiEta": "2026-06-02",
       "status": "在途",
       "stage": "in_second_leg",
       "pay": "已付",
-      "remark": "在途"
+      "remark": "正常在途"
     },
     {
       "id": "14",
@@ -472,13 +472,13 @@
       "shanghaiSalesAmount": 141312.0,
       "europeEtd": "4月9日",
       "singaporeEta": "5月26日",
-      "secondLegVessel": "CSSCO",
-      "singaporeEtd": "2026-06-09",
+      "secondLegVessel": "待定",
+      "singaporeEtd": "待定",
       "shanghaiEta": "2026-06-19",
-      "status": "在途",
-      "stage": "in_second_leg",
+      "status": "在新",
+      "stage": "in_singapore",
       "pay": "已付",
-      "remark": "已经订舱"
+      "remark": "头程延误 2 天"
     },
     {
       "id": "15",
@@ -506,7 +506,7 @@
       "shanghaiEta": "待定",
       "status": "待排",
       "stage": "first_leg",
-      "pay": "待付款",
+      "pay": "预计付款 6/25",
       "remark": "上游排期待跟进"
     },
     {
@@ -535,7 +535,7 @@
       "shanghaiEta": "待定",
       "status": "待排",
       "stage": "first_leg",
-      "pay": "待付款",
+      "pay": "预计付款 6/25",
       "remark": "新单接入(BL:269501684)"
     },
     {
@@ -558,14 +558,43 @@
       "shanghaiUnitPrice": 4.6,
       "shanghaiSalesAmount": 329728.0,
       "europeEtd": "5月9日",
-      "singaporeEta": "待确认",
+      "singaporeEta": "2026-06-23",
       "secondLegVessel": "待定",
       "singaporeEtd": "待定",
       "shanghaiEta": "待定",
       "status": "在途",
       "stage": "first_leg",
-      "pay": "待付款",
+      "pay": "待付",
       "remark": "新单接入(BL:269748417)"
+    },
+    {
+      "id": "18",
+      "idNumber": 18.0,
+      "product": "电池电芯",
+      "type": "Cell",
+      "importAmount": 152970.77,
+      "exportLot": "待定 (TBD)",
+      "importContainers": 8,
+      "exportContainers": 4,
+      "savedContainers": 4,
+      "loadPlan": "3满(40)+1尾(33)",
+      "pallets": 153,
+      "boxes": 2448,
+      "importPcs": 39168,
+      "exportPcs": 39168,
+      "netWeightKg": 41909.8,
+      "grossWeightKg": 50490,
+      "shanghaiUnitPrice": 4.6,
+      "shanghaiSalesAmount": 180172.8,
+      "europeEtd": "5月17日",
+      "singaporeEta": "2026-06-30",
+      "secondLegVessel": "待定",
+      "singaporeEtd": "待定",
+      "shanghaiEta": "--",
+      "status": "在途",
+      "stage": "first_leg",
+      "pay": "待付",
+      "remark": "新单发运(BL:270273124)"
     }
   ]
 }

@@ -11,7 +11,6 @@ import openpyxl
 HEADER_ALIASES = {
     "import_lot": "进口批次 / 货品",
     "import_amount": "进口发票金额 (USD)",
-    "payment_status": "货款已付",
     "export_lot": "出口批次(Export Lot)",
     "import_containers": "进口柜数",
     "export_containers": "出口柜数",
@@ -121,7 +120,11 @@ def parse_lot(raw_value):
 
 
 def infer_payment_status(lot_number):
-    return "已付" if lot_number < 11 else "待付"
+    if lot_number <= 14:
+        return "已付"
+    if lot_number in (15, 16):
+        return "预计付款 6/25"
+    return "待付"
 
 
 def normalize_payment_status(value, lot_number):
@@ -243,7 +246,7 @@ def build_lots(workbook_path, as_of_date):
                 "shanghaiEta": shanghai_eta,
                 "status": status,
                 "stage": infer_stage(status, singapore_etd, shanghai_eta),
-                "pay": normalize_payment_status(cell(row, column_map, "payment_status"), lot["idNumber"]),
+                "pay": normalize_payment_status(cell(row, column_map, "payment_status") if "payment_status" in column_map else "", lot["idNumber"]),
                 "remark": remark,
             }
         )
@@ -323,4 +326,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
