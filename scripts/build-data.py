@@ -31,6 +31,10 @@ HEADER_ALIASES = {
     "remark": "最新物流与节点状态",
 }
 
+OPTIONAL_HEADER_ALIASES = {
+    "payment_status": "货款已付",
+}
+
 
 def normalize_header(value):
     text = "" if value is None else str(value)
@@ -123,7 +127,9 @@ def infer_payment_status(lot_number):
     if lot_number <= 14:
         return "已付"
     if lot_number in (15, 16):
-        return "预计付款 6/25"
+        return "已付"
+    if lot_number in (17, 18):
+        return "预计付款 7/10前"
     return "待付"
 
 
@@ -138,7 +144,7 @@ def normalize_payment_status(value, lot_number):
     if lowered in {"no", "n", "unpaid", "false", "待付", "未付", "未付款"}:
         return "待付"
     if "estimate" in lowered or "预计" in text or "暂定" in text:
-        due = text.replace("estimate", "").strip()
+        due = text.replace("estimate", "").replace("预计付款", "").replace("预计", "").strip()
         return f"预计付款 {due}" if due else text
     return text
 
@@ -148,6 +154,9 @@ def infer_status(remark, europe_etd, singapore_eta, singapore_etd, shanghai_eta,
     if "已抵上海" in combined or "已抵沪" in combined:
         return "抵沪"
     if singapore_etd and singapore_etd != "待定" and shanghai_eta and shanghai_eta != "待定":
+        singapore_etd_date = parse_date(singapore_etd, as_of_date.year)
+        if singapore_etd_date and singapore_etd_date > as_of_date:
+            return "待排"
         return "在途"
 
     singapore_eta_date = parse_date(singapore_eta, as_of_date.year)
@@ -161,6 +170,8 @@ def infer_status(remark, europe_etd, singapore_eta, singapore_etd, shanghai_eta,
 def infer_stage(status, singapore_etd, shanghai_eta):
     if status == "抵沪":
         return "arrived_shanghai"
+    if status == "待排":
+        return "in_singapore"
     if singapore_etd != "待定" and shanghai_eta != "待定":
         return "in_second_leg"
     if status == "在新":
@@ -186,6 +197,12 @@ def build_column_map(header_row):
 
     if missing:
         raise ValueError(f"Excel 缺少必要表头: {', '.join(missing)}")
+
+    for field, header in OPTIONAL_HEADER_ALIASES.items():
+        normalized = normalize_header(header)
+        if normalized in normalized_to_index:
+            column_map[field] = normalized_to_index[normalized]
+
     return column_map
 
 

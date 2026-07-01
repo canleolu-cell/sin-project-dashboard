@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-23 08:50",
+  "generatedAt": "2026-07-01 13:21",
   "sourceFile": "lot-details.xlsx",
   "lotRange": "Lot 1-18",
   "totals": {
@@ -41,7 +41,7 @@
       "importContainers": 98,
       "exportContainers": 49,
       "savedContainers": 49,
-      "description": "4 票抵沪 | 3 票在途 | 1 票在新"
+      "description": "4 票抵沪 | 2 票在途 | 2 票待排"
     }
   ],
   "lots": [
@@ -216,7 +216,7 @@
       "shanghaiEta": "2026-05-28",
       "status": "抵沪",
       "stage": "arrived_shanghai",
-      "pay": "已付",
+      "pay": "20",
       "remark": "已抵上海"
     },
     {
@@ -486,7 +486,7 @@
       "product": "电池电芯",
       "type": "Cell",
       "importAmount": 279946.24,
-      "exportLot": "Export lot 11",
+      "exportLot": "Export Lot 11",
       "importContainers": 14,
       "exportContainers": 7,
       "savedContainers": 7,
@@ -501,13 +501,13 @@
       "shanghaiSalesAmount": 329728.0,
       "europeEtd": "待确认",
       "singaporeEta": "2026-06-09",
-      "secondLegVessel": "MSK",
-      "singaporeEtd": "2026-06-20",
-      "shanghaiEta": "2026-07-01",
+      "secondLegVessel": "APL Santiago",
+      "singaporeEtd": "2026-06-21",
+      "shanghaiEta": "2026-07-02",
       "status": "在途",
       "stage": "in_second_leg",
-      "pay": "预计付款 6/25",
-      "remark": "在途"
+      "pay": "已付",
+      "remark": "在途；提单已拿"
     },
     {
       "id": "16",
@@ -530,13 +530,13 @@
       "shanghaiSalesAmount": 329728.0,
       "europeEtd": "待确认",
       "singaporeEta": "2026-06-16",
-      "secondLegVessel": "待定",
+      "secondLegVessel": "Hanoi Express",
       "singaporeEtd": "2026-06-26",
-      "shanghaiEta": "2026-07-06",
+      "shanghaiEta": "2026-07-03",
       "status": "在途",
       "stage": "in_second_leg",
-      "pay": "预计付款 6/25",
-      "remark": "已安排船期"
+      "pay": "已付",
+      "remark": "在途；提单已拿"
     },
     {
       "id": "17",
@@ -559,13 +559,13 @@
       "shanghaiSalesAmount": 329728.0,
       "europeEtd": "5月9日",
       "singaporeEta": "2026-06-23",
-      "secondLegVessel": "待定",
-      "singaporeEtd": "待定",
-      "shanghaiEta": "待定",
-      "status": "在新",
+      "secondLegVessel": "Maersk Jakarta",
+      "singaporeEtd": "2026-07-07",
+      "shanghaiEta": "2026-07-22",
+      "status": "待排",
       "stage": "in_singapore",
-      "pay": "待付",
-      "remark": "新单接入(BL:269748417)"
+      "pay": "预计付款 7/10前",
+      "remark": "已拿提单；费用预计7/10前付清；待开船"
     },
     {
       "id": "18",
@@ -588,13 +588,13 @@
       "shanghaiSalesAmount": 180172.8,
       "europeEtd": "5月17日",
       "singaporeEta": "2026-06-30",
-      "secondLegVessel": "待定",
-      "singaporeEtd": "待定",
-      "shanghaiEta": "--",
-      "status": "在途",
-      "stage": "first_leg",
-      "pay": "待付",
-      "remark": "新单发运(BL:270273124)"
+      "secondLegVessel": "APL Mexico City",
+      "singaporeEtd": "2026-07-13",
+      "shanghaiEta": "2026-07-21",
+      "status": "待排",
+      "stage": "in_singapore",
+      "pay": "预计付款 7/10前",
+      "remark": "已拿提单；费用预计7/10前付清；待开船"
     }
   ]
 }
