@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-01 13:21",
+  "generatedAt": "2026-07-01 13:29",
   "sourceFile": "lot-details.xlsx",
   "lotRange": "Lot 1-18",
   "totals": {
@@ -216,7 +216,7 @@
       "shanghaiEta": "2026-05-28",
       "status": "抵沪",
       "stage": "arrived_shanghai",
-      "pay": "20",
+      "pay": "已付",
       "remark": "已抵上海"
     },
     {
